@@ -2,7 +2,6 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
 
-    // Ahora SÍ usar el plugin de Compose (para Kotlin 2.0+)
     alias(libs.plugins.kotlin.compose)
 
     id("com.google.devtools.ksp")

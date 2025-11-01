@@ -2,10 +2,10 @@ package com.creditos.data.repository
 
 import com.creditos.data.dao.PrestamoDao
 import com.creditos.data.dao.CuotaDao
-import com.creditos.data.entities.Prestamo
+import com.creditos.data.dao.PrestamoConClienteInfo
 import com.creditos.data.entities.Cuota
+import com.creditos.data.entities.Prestamo
 import com.creditos.utils.CalculadoraAmortizacion
-import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class PrestamoRepository @Inject constructor(
@@ -34,25 +34,27 @@ class PrestamoRepository @Inject constructor(
             fechaInicio = fechaInicio
         )
 
-        // Calcular totales
+        // Totales
         val totalIntereses = tablaCalculada.sumOf { it.montoInteres }
         val montoTotalPagar = montoPrincipal + totalIntereses
 
-        // Crear préstamo
+        // Crear préstamo (usar snake_case de la entidad Prestamo)
         val prestamo = Prestamo(
-            clienteId = clienteId,
-            montoPrincipal = montoPrincipal,
-            tasaInteres = tasaInteres,
-            numeroCuotas = numeroCuotas,
-            frecuenciaPago = frecuenciaPago,
-            tipoAmortizacion = tipoAmortizacion,
-            fechaInicio = fechaInicio,
-            fechaPrimerPago = tablaCalculada.first().fechaVencimiento,
-            saldoPendiente = montoPrincipal,
-            montoTotalPagar = montoTotalPagar,
-            totalIntereses = totalIntereses,
+            cliente_id = clienteId,
+            monto_principal = montoPrincipal,
+            tasa_interes = tasaInteres,
+            numero_cuotas = numeroCuotas,
+            frecuencia_pago = frecuenciaPago,
+            tipo_amortizacion = tipoAmortizacion,
+            fecha_inicio = fechaInicio,
+            fecha_primer_pago = tablaCalculada.first().fechaVencimiento,
+            estado = "ACTIVO",
+            saldo_pendiente = montoPrincipal,
+            monto_total_pagar = montoTotalPagar,
+            total_intereses = totalIntereses,
             notas = notas,
-            fechaCreacion = java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.getDefault()).format(java.util.Date())
+            fecha_creacion = java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.getDefault()).format(java.util.Date()),
+            fecha_finalizacion = null
         )
 
         val prestamoId = prestamoDao.insertar(prestamo)
@@ -75,32 +77,27 @@ class PrestamoRepository @Inject constructor(
         return prestamoId
     }
 
-    suspend fun obtenerPrestamoPorId(prestamoId: Int): Prestamo? {
-        return prestamoDao.obtenerPorId(prestamoId)
-    }
+    suspend fun obtenerPrestamoPorId(prestamoId: Int): Prestamo? =
+        prestamoDao.obtenerPorId(prestamoId)
 
-    suspend fun obtenerPrestamosPorCliente(clienteId: Int): List<Prestamo> {
-        return prestamoDao.obtenerPorCliente(clienteId)
-    }
+    suspend fun obtenerPrestamosPorCliente(clienteId: Int): List<Prestamo> =
+        prestamoDao.obtenerPorCliente(clienteId)
 
-    suspend fun obtenerPrestamosActivos(): List<PrestamoDao.PrestamoConCliente> {
-        return prestamoDao.obtenerPrestamosActivosConCliente()
-    }
+    suspend fun obtenerPrestamosActivos(): List<PrestamoConClienteInfo> =
+        prestamoDao.obtenerPrestamosActivosConCliente()
 
-    suspend fun obtenerPrestamosPorEstado(estado: String): List<Prestamo> {
-        return prestamoDao.obtenerPorEstado(estado)
-    }
+    suspend fun obtenerPrestamosPorEstado(estado: String): List<Prestamo> =
+        prestamoDao.obtenerPorEstado(estado)
 
-    suspend fun actualizarEstadoPrestamo(prestamoId: Int, nuevoEstado: String) {
+    suspend fun actualizarEstadoPrestamo(prestamoId: Int, nuevoEstado: String) =
         prestamoDao.actualizarEstado(prestamoId, nuevoEstado)
-    }
 
-    suspend fun actualizarSaldoPrestamo(prestamoId: Int, nuevoSaldo: Double) {
+    suspend fun actualizarSaldoPrestamo(prestamoId: Int, nuevoSaldo: Double) =
         prestamoDao.actualizarSaldo(prestamoId, nuevoSaldo)
-    }
 
     suspend fun obtenerResumenPrestamo(prestamoId: Int): ResumenPrestamo {
-        val prestamo = prestamoDao.obtenerPorId(prestamoId) ?: throw Exception("Préstamo no encontrado")
+        val prestamo = prestamoDao.obtenerPorId(prestamoId)
+            ?: throw Exception("Préstamo no encontrado")
         val cuotas = cuotaDao.obtenerPorPrestamo(prestamoId)
 
         val cuotasPagadas = cuotas.count { it.estado == "PAGADA" }
@@ -112,7 +109,7 @@ class PrestamoRepository @Inject constructor(
         return ResumenPrestamo(
             prestamo = prestamo,
             totalPagado = totalPagado,
-            saldoPendiente = prestamo.saldoPendiente,
+            saldoPendiente = prestamo.saldo_pendiente,
             cuotasPagadas = cuotasPagadas,
             cuotasPendientes = cuotasPendientes,
             cuotasVencidas = cuotasVencidas,

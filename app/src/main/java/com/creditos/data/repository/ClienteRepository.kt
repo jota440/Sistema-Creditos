@@ -41,4 +41,8 @@ class ClienteRepository @Inject constructor(
     suspend fun buscarClientes(query: String): List<Cliente> {
         return clienteDao.buscarPorNombreODocumento("%$query%")
     }
+
+    suspend fun obtenerClientesActivos(): List<Cliente> {
+        return clienteDao.obtenerActivos()
+    }
 }

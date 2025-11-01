@@ -10,10 +10,9 @@ import androidx.room.migration.Migration
 
 import com.creditos.data.entities.Cliente
 import com.creditos.data.entities.TipoDocumento
-import com.creditos.data.entities.Prestamo
 import com.creditos.data.entities.Cuota
 import com.creditos.data.entities.Pago
-
+import com.creditos.data.entities.Prestamo
 import com.creditos.data.dao.ClienteDao
 import com.creditos.data.dao.TipoDocumentoDao
 import com.creditos.data.dao.PrestamoDao
@@ -26,9 +25,9 @@ import com.creditos.data.dao.PagoDao
         TipoDocumento::class,
         Prestamo::class,
         Cuota::class,
-        Pago::class  // ← AGREGAR ESTO
+        Pago::class
     ],
-    version = 2,  // ← INCREMENTAR VERSIÓN
+    version = 2,
     exportSchema = false
 )
 abstract class CreditosDatabase : RoomDatabase() {
@@ -37,10 +36,11 @@ abstract class CreditosDatabase : RoomDatabase() {
     abstract fun tipoDocumentoDao(): TipoDocumentoDao
     abstract fun prestamoDao(): PrestamoDao
     abstract fun cuotaDao(): CuotaDao
-    abstract fun pagoDao(): PagoDao  // ← AGREGAR ESTO
+    abstract fun pagoDao(): PagoDao
 
     companion object {
-        // ... código existente
+        @Volatile
+        private var INSTANCE: CreditosDatabase? = null
 
         private val MIGRATION_1_2 = object : Migration(1, 2) {
             override fun migrate(database: SupportSQLiteDatabase) {
@@ -110,6 +110,18 @@ abstract class CreditosDatabase : RoomDatabase() {
                     .build()
                 INSTANCE = instance
                 instance
+            }
+        }
+        private fun insertTiposDocumentoIniciales(db: SupportSQLiteDatabase) {
+            val tipos = listOf(
+                "('DNI', 'Documento Nacional de Identidad', 'ES', 1, 1)",
+                "('NIE', 'Número de Identificación de Extranjero', 'ES', 1, 1)",
+                "('PASAPORTE', 'Pasaporte', 'ES', 0, 1)",
+                "('CIF', 'Código de Identificación Fiscal', 'ES', 1, 1)"
+            )
+
+            tipos.forEach { valores ->
+                db.execSQL("INSERT INTO cl_tipos_documento (codigo, descripcion, pais, requiere_validacion, activo) VALUES $valores")
             }
         }
     }

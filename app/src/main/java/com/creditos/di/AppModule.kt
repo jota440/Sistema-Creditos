@@ -4,6 +4,7 @@ import android.content.Context
 import com.creditos.data.database.CreditosDatabase
 import com.creditos.data.dao.ClienteDao
 import com.creditos.data.dao.TipoDocumentoDao
+import com.creditos.data.dao.PrestamoDao
 import com.creditos.data.dao.PagoDao
 import com.creditos.data.dao.CuotaDao
 import com.creditos.data.repository.ClienteRepository
@@ -36,7 +37,11 @@ object AppModule {
     fun provideTipoDocumentoDao(database: CreditosDatabase): TipoDocumentoDao {
         return database.tipoDocumentoDao()
     }
-
+    @Provides
+    @Singleton
+    fun providePrestamoDao(database: CreditosDatabase): PrestamoDao {
+        return database.prestamoDao()
+    }
     @Provides
     fun providePagoDao(database: CreditosDatabase): PagoDao {
         return database.pagoDao()

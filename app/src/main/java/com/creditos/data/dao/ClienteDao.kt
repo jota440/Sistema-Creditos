@@ -21,6 +21,6 @@ interface ClienteDao {
     @Query("SELECT * FROM cl_clientes WHERE nombre LIKE :query OR apellido LIKE :query OR numeroDocumento LIKE :query")
     suspend fun buscarPorNombreODocumento(query: String): List<Cliente>
 
-    @Query("SELECT * FROM cl_clientes WHERE activo = 1")
+    @Query("SELECT * FROM cl_clientes WHERE activo = 1 ORDER BY nombre, apellido")
     suspend fun obtenerActivos(): List<Cliente>
 }

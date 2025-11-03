@@ -1,3 +1,4 @@
+//DashboardScreen.kt
 package com.creditos.ui.dashboard
 
 import androidx.compose.foundation.layout.Arrangement
@@ -29,12 +30,24 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.creditos.viewmodels.DashboardViewModel
 
 @Composable
 fun DashboardScreen(
     onNavigateToClientes: () -> Unit,
-    onNavigateToPrestamos: () -> Unit
+    onNavigateToPrestamos: () -> Unit,
+    viewModel: DashboardViewModel? = null // ✅ Opcional, null en Preview
 ) {
+    val vm = viewModel ?: hiltViewModel<DashboardViewModel>()
+    // Si no hay viewModel (Preview), usar 0
+    //val prestamosActivos = viewModel?.prestamosActivos?.collectAsState()?.value ?: 0
+    //val totalClientes = viewModel?.totalClientes?.collectAsState()?.value ?: 0
+    val prestamosActivos by vm.prestamosActivos.collectAsState()
+    val totalClientes by vm.totalClientes.collectAsState()
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -54,13 +67,13 @@ fun DashboardScreen(
         ) {
             ResumenCard(
                 title = "Préstamos Activos",
-                value = "12",
+                value = prestamosActivos.toString(), // Mostrará "0" si no hay datos
                 icon = Icons.Default.AttachMoney,
                 modifier = Modifier.weight(1f)
             )
             ResumenCard(
                 title = "Clientes",
-                value = "25",
+                value = totalClientes.toString(), // Mostrará "0" si no hay datos
                 icon = Icons.Default.Person,
                 modifier = Modifier.weight(1f)
             )
@@ -227,6 +240,7 @@ fun DashboardScreenPreview() {
         DashboardScreen(
             onNavigateToClientes = {},
             onNavigateToPrestamos = {}
+            // viewModel = null (por defecto), mostrará 0 en ambas cards
         )
     }
 }

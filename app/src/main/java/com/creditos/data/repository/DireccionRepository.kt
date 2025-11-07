@@ -51,4 +51,29 @@ class DireccionRepository @Inject constructor(
     suspend fun countByClienteId(clienteId: Int): Int {
         return direccionDao.countByClienteId(clienteId)
     }
+
+    suspend fun marcarComoPredeterminada(direccionId: Int, clienteId: Int) {
+        direccionDao.clearDireccionesPrincipales(clienteId)
+        val direccion = direccionDao.getById(direccionId)
+        direccion?.let { dir ->
+            // CORREGIDO: Usar constructor completo en lugar de copy()
+            val direccionActualizada = Direccion(
+                id = dir.id,
+                clienteId = dir.clienteId,
+                tipoDireccion = dir.tipoDireccion,
+                calle = dir.calle,
+                numero = dir.numero,
+                piso = dir.piso,
+                puerta = dir.puerta,
+                codigoPostal = dir.codigoPostal,
+                ciudad = dir.ciudad,
+                provincia = dir.provincia,
+                pais = dir.pais,
+                predeterminada = true,  // ← Cambiar a true
+                notas = dir.notas,
+                fechaCreacion = dir.fechaCreacion
+            )
+            direccionDao.update(direccionActualizada)
+        }
+    }
 }

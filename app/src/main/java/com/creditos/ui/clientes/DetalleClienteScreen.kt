@@ -1,7 +1,9 @@
+//DetalleClienteScreen
 @file:OptIn(ExperimentalMaterial3Api::class)
 package com.creditos.ui.clientes
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -9,31 +11,39 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.AttachMoney
-import androidx.compose.foundation.layout.width
-import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ElevatedCard
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Tab
+import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.ExperimentalMaterial3Api
-
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -41,7 +51,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.creditos.data.entities.Cliente
+import com.creditos.data.entities.Direccion
+import com.creditos.data.entities.Prestamo
 import com.creditos.viewmodels.DetalleClienteViewModel
+import com.creditos.viewmodels.DireccionViewModel
 
 @Composable
 fun DetalleClienteScreen(
@@ -52,6 +65,7 @@ fun DetalleClienteScreen(
 ) {
     val cliente by viewModel.cliente.collectAsState()
     val uiState by viewModel.uiState.collectAsState()
+    var tabSeleccionada by remember { mutableStateOf(0) }
 
     // Cargar cliente cuando se abre la pantalla
     LaunchedEffect(clienteId) {
@@ -123,12 +137,49 @@ fun DetalleClienteScreen(
             }
             else -> {
                 if (cliente != null) {
-                    DetalleClienteContent(
-                        cliente = cliente!!,
+                    Column(
                         modifier = Modifier
                             .fillMaxSize()
                             .padding(paddingValues)
-                    )
+                    ) {
+                        // Tabs
+                        TabRow(selectedTabIndex = tabSeleccionada) {
+                            Tab(
+                                text = { Text("Resumen") },
+                                selected = tabSeleccionada == 0,
+                                onClick = { tabSeleccionada = 0 }
+                            )
+                            Tab(
+                                text = { Text("Préstamos") },
+                                selected = tabSeleccionada == 1,
+                                onClick = { tabSeleccionada = 1 }
+                            )
+                            Tab(
+                                text = { Text("Direcciones") },
+                                selected = tabSeleccionada == 2,
+                                onClick = { tabSeleccionada = 2 }
+                            )
+                        }
+
+                        // Contenido de tabs
+                        when (tabSeleccionada) {
+                            0 -> ResumenTab(
+                                cliente = cliente!!,
+                                resumen = obtenerResumenEjemplo(),
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .verticalScroll(rememberScrollState())
+                            )
+                            1 -> PrestamosTab(
+                                clienteId = clienteId,
+                                modifier = Modifier.fillMaxSize()
+                            )
+                            2 -> DireccionesTab(
+                                clienteId = clienteId,
+                                modifier = Modifier.fillMaxSize()
+                            )
+                        }
+                    }
                 } else {
                     Column(
                         modifier = Modifier
@@ -146,14 +197,13 @@ fun DetalleClienteScreen(
 }
 
 @Composable
-fun DetalleClienteContent(
+fun ResumenTab(
     cliente: Cliente,
+    resumen: DetalleClienteViewModel.ResumenPrestamo,
     modifier: Modifier = Modifier
 ) {
     Column(
-        modifier = modifier
-            .verticalScroll(rememberScrollState())
-            .padding(16.dp),
+        modifier = modifier.padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         // Tarjeta de Información Personal
@@ -274,7 +324,7 @@ fun DetalleClienteContent(
             }
         }
 
-        // Resumen de Préstamos (placeholder por ahora)
+        // Resumen de Préstamos
         Card(
             modifier = Modifier.fillMaxWidth()
         ) {
@@ -299,7 +349,7 @@ fun DetalleClienteContent(
                     Spacer(modifier = Modifier.width(8.dp))
                     StatCard(
                         title = "Total Adeudado",
-                        value = "€0.00",
+                        value = "€${"%.2f".format(resumen.saldoPendiente)}",
                         modifier = Modifier.weight(1f)
                     )
                 }
@@ -311,8 +361,8 @@ fun DetalleClienteContent(
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     StatCard(
-                        title = "Cuotas Pendientes",
-                        value = "0",
+                        title = "Cuotas Pagadas",
+                        value = resumen.cuotasPagadas.toString(),
                         modifier = Modifier.weight(1f)
                     )
                     Spacer(modifier = Modifier.width(8.dp))
@@ -321,6 +371,185 @@ fun DetalleClienteContent(
                         value = "-",
                         modifier = Modifier.weight(1f)
                     )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun PrestamosTab(
+    clienteId: Int,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier.padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Text("Préstamos del cliente en desarrollo...")
+        Text(
+            "Aquí se mostrarán los préstamos activos del cliente",
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+    }
+}
+
+@Composable
+fun DireccionesTab(
+    clienteId: Int,
+    modifier: Modifier = Modifier,
+    viewModel: DireccionViewModel = hiltViewModel()
+) {
+    val direcciones by viewModel.direcciones.collectAsState()
+    val uiState by viewModel.uiState.collectAsState()
+
+    // Cargar direcciones al abrir
+    LaunchedEffect(clienteId) {
+        viewModel.cargarDirecciones(clienteId)
+    }
+
+    Column(modifier = modifier.padding(16.dp)) {
+        // Header con botón agregar
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = "Direcciones",
+                style = MaterialTheme.typography.headlineSmall
+            )
+            Button(
+                onClick = { /* Navegar a NuevaDireccionScreen */ },
+                modifier = Modifier.height(36.dp)
+            ) {
+                Text("Agregar")
+            }
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        when (uiState) {
+            is DireccionViewModel.UIState.Loading -> {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator()
+                }
+            }
+            is DireccionViewModel.UIState.Error -> {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text("Error al cargar direcciones")
+                }
+            }
+            else -> {
+                if (direcciones.isEmpty()) {
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                            Text("No hay direcciones registradas")
+                            Text(
+                                "Presiona 'Agregar' para crear la primera",
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
+                    }
+                } else {
+                    LazyColumn(
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        items(direcciones) { direccion ->
+                            DireccionCard(
+                                direccion = direccion,
+                                onEditar = { /* Navegar a EditarDireccionScreen */ },
+                                onEliminar = { viewModel.eliminarDireccion(direccion.id) },
+                                onPredeterminar = {
+                                    viewModel.marcarComoPredeterminada(direccion.id, clienteId)
+                                }
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun DireccionCard(
+    direccion: Direccion,
+    onEditar: () -> Unit,
+    onEliminar: () -> Unit,
+    onPredeterminar: () -> Unit
+) {
+    Card(modifier = Modifier.fillMaxWidth()) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            // Header con tipo y predeterminada
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(
+                    text = direccion.obtenerTipoDireccionTexto(),
+                    style = MaterialTheme.typography.bodyLarge,
+                    fontWeight = FontWeight.Bold
+                )
+                if (direccion.predeterminada) {
+                    Text(
+                        text = "PREDETERMINADA",
+                        color = MaterialTheme.colorScheme.primary,
+                        fontWeight = FontWeight.Bold,
+                        style = MaterialTheme.typography.labelSmall
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            // Dirección completa
+            Text(direccion.obtenerDireccionCompleta())
+
+            // Notas si existen
+            direccion.notas?.let { notas ->
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = "Notas: $notas",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            // Botones de acción
+            Row(
+                horizontalArrangement = Arrangement.End,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                if (!direccion.predeterminada) {
+                    TextButton(onClick = onPredeterminar) {
+                        Text("Predeterminar")
+                    }
+                }
+                TextButton(onClick = onEditar) {
+                    Text("Editar")
+                }
+                TextButton(
+                    onClick = onEliminar,
+                    colors = ButtonDefaults.textButtonColors(
+                        contentColor = MaterialTheme.colorScheme.error
+                    )
+                ) {
+                    Text("Eliminar")
                 }
             }
         }
@@ -388,25 +617,27 @@ fun StatCard(
     }
 }
 
+// Función temporal - eliminar cuando tengas el resumen real
+private fun obtenerResumenEjemplo(): DetalleClienteViewModel.ResumenPrestamo {
+    return DetalleClienteViewModel.ResumenPrestamo(
+        prestamo = Prestamo.crearPrestamoEjemplo(),
+        totalPagado = 250.0,
+        saldoPendiente = 750.0,
+        cuotasPagadas = 1,
+        cuotasPendientes = 11,
+        cuotasVencidas = 0,
+        proximaCuota = null
+    )
+}
+
 @Composable
 @Preview(showBackground = true)
 fun DetalleClienteContentPreview() {
     com.creditos.ui.theme.SistemaCreditosTheme {
-        DetalleClienteContent(
-            cliente = Cliente(
-                id = 1,
-                nombre = "Juan",
-                apellido = "Pérez",
-                tipoDocumentoId = 1,
-                numeroDocumento = "12345678",
-                telefonoPrincipal = "+34 600 000 000",
-                email = "juan@email.com",
-                fechaNacimiento = "1990-01-01",
-                ocupacion = "Desarrollador",
-                notas = "Cliente confiable, siempre paga a tiempo.",
-                fechaRegistro = "2024-01-15",
-                activo = true
-            )
+        DetalleClienteScreen(
+            clienteId = 1,
+            onNavigateBack = {},
+            onNavigateToNuevoPrestamo = {}
         )
     }
 }

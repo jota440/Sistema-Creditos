@@ -187,7 +187,7 @@ fun PrestamoCard(
                         fontWeight = FontWeight.Bold
                     )
                     Text(
-                        text = "${prestamo.numero_cuotas} cuotas ${prestamo.obtenerFrecuenciaPagoTexto().lowercase()}",
+                        text = "${prestamo.numeroCuotas} cuotas ${prestamo.obtenerFrecuenciaPagoTexto().lowercase()}",
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -220,7 +220,7 @@ fun PrestamoCard(
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                     Text(
-                        text = "€${"%.2f".format(prestamo.monto_principal)}",
+                        text = "€${"%.2f".format(prestamo.montoPrincipal)}",
                         style = MaterialTheme.typography.bodyMedium,
                         fontWeight = FontWeight.Medium
                     )
@@ -233,7 +233,7 @@ fun PrestamoCard(
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                     Text(
-                        text = "€${"%.2f".format(prestamo.saldo_pendiente)}",
+                        text = "€${"%.2f".format(prestamo.saldoPendiente)}",
                         style = MaterialTheme.typography.bodyMedium,
                         fontWeight = FontWeight.Medium,
                         color = MaterialTheme.colorScheme.primary
@@ -247,7 +247,7 @@ fun PrestamoCard(
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                     Text(
-                        text = "${"%.1f".format(prestamo.tasa_interes)}%",
+                        text = "${"%.1f".format(prestamo.tasaInteres)}%",
                         style = MaterialTheme.typography.bodyMedium,
                         fontWeight = FontWeight.Medium
                     )
@@ -289,12 +289,12 @@ fun PrestamoCard(
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
-                    text = "Inicio: ${prestamo.fecha_inicio}",
+                    text = "Inicio: ${prestamo.fechaInicio}",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
                 Text(
-                    text = "Vence: ${prestamo.fecha_primer_pago}",
+                    text = "Vence: ${prestamo.fechaPrimerPago}",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )

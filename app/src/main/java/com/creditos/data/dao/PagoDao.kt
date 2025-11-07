@@ -3,6 +3,7 @@ package com.creditos.data.dao
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
+import androidx.room.ColumnInfo
 import com.creditos.data.entities.Pago
 import kotlinx.coroutines.flow.Flow
 
@@ -31,7 +32,8 @@ interface PagoDao {
     suspend fun obtenerEstadisticasMetodosPago(): List<MetodoPagoEstadistica>
 
     data class MetodoPagoEstadistica(
-        val metodo_pago: String,
+        @ColumnInfo(name = "metodo_pago")
+        val metodoPago: String,
         val cantidad: Int
     )
 }

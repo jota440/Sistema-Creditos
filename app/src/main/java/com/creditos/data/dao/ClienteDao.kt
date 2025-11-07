@@ -18,7 +18,7 @@ interface ClienteDao {
     @Insert
     suspend fun insertar(cliente: Cliente)
 
-    @Query("SELECT * FROM cl_clientes WHERE nombre LIKE :query OR apellido LIKE :query OR numeroDocumento LIKE :query")
+    @Query("SELECT * FROM cl_clientes WHERE nombre LIKE :query OR apellido LIKE :query OR numero_documento LIKE :query")
     suspend fun buscarPorNombreODocumento(query: String): List<Cliente>
 
     @Query("SELECT * FROM cl_clientes WHERE activo = 1 ORDER BY nombre, apellido")

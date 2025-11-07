@@ -40,21 +40,21 @@ class PrestamoRepository @Inject constructor(
 
         // Crear préstamo (usar snake_case de la entidad Prestamo)
         val prestamo = Prestamo(
-            cliente_id = clienteId,
-            monto_principal = montoPrincipal,
-            tasa_interes = tasaInteres,
-            numero_cuotas = numeroCuotas,
-            frecuencia_pago = frecuenciaPago,
-            tipo_amortizacion = tipoAmortizacion,
-            fecha_inicio = fechaInicio,
-            fecha_primer_pago = tablaCalculada.first().fechaVencimiento,
+            clienteId = clienteId,
+            montoPrincipal = montoPrincipal,
+            tasaInteres = tasaInteres,
+            numeroCuotas = numeroCuotas,
+            frecuenciaPago = frecuenciaPago,
+            tipoAmortizacion = tipoAmortizacion,
+            fechaInicio = fechaInicio,
+            fechaPrimerPago = tablaCalculada.first().fechaVencimiento,
             estado = "ACTIVO",
-            saldo_pendiente = montoPrincipal,
-            monto_total_pagar = montoTotalPagar,
-            total_intereses = totalIntereses,
+            saldoPendiente = montoPrincipal,
+            montoTotalPagar = montoTotalPagar,
+            totalIntereses = totalIntereses,
             notas = notas,
-            fecha_creacion = java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.getDefault()).format(java.util.Date()),
-            fecha_finalizacion = null
+            fechaCreacion = java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.getDefault()).format(java.util.Date()),
+            fechaFinalizacion = null
         )
 
         val prestamoId = prestamoDao.insertar(prestamo)
@@ -62,13 +62,13 @@ class PrestamoRepository @Inject constructor(
         // Crear cuotas
         val cuotas = tablaCalculada.mapIndexed { index, calculada ->
             Cuota(
-                prestamo_id = prestamoId.toInt(),
-                numero_cuota = index + 1,
-                fecha_vencimiento = calculada.fechaVencimiento,
-                monto_capital = calculada.montoCapital,
-                monto_interes = calculada.montoInteres,
-                monto_total = calculada.montoTotal,
-                saldo_restante = calculada.saldoRestante
+                prestamoId = prestamoId.toInt(),
+                numeroCuota = index + 1,
+                fechaVencimiento = calculada.fechaVencimiento,
+                montoCapital = calculada.montoCapital,
+                montoInteres = calculada.montoInteres,
+                montoTotal = calculada.montoTotal,
+                saldoRestante = calculada.saldoRestante
             )
         }
 
@@ -103,13 +103,13 @@ class PrestamoRepository @Inject constructor(
         val cuotasPagadas = cuotas.count { it.estado == "PAGADA" }
         val cuotasPendientes = cuotas.count { it.estado == "PENDIENTE" }
         val cuotasVencidas = cuotas.count { it.estado == "VENCIDA" }
-        val totalPagado = cuotas.filter { it.estado == "PAGADA" }.sumOf { it.monto_pagado }
+        val totalPagado = cuotas.filter { it.estado == "PAGADA" }.sumOf { it.montoPagado }
         val proximaCuota = cuotaDao.obtenerProximaCuotaPendiente(prestamoId)
 
         return ResumenPrestamo(
             prestamo = prestamo,
             totalPagado = totalPagado,
-            saldoPendiente = prestamo.saldo_pendiente,
+            saldoPendiente = prestamo.saldoPendiente,
             cuotasPagadas = cuotasPagadas,
             cuotasPendientes = cuotasPendientes,
             cuotasVencidas = cuotasVencidas,

@@ -42,9 +42,7 @@ fun DashboardScreen(
     viewModel: DashboardViewModel? = null // ✅ Opcional, null en Preview
 ) {
     val vm = viewModel ?: hiltViewModel<DashboardViewModel>()
-    // Si no hay viewModel (Preview), usar 0
-    //val prestamosActivos = viewModel?.prestamosActivos?.collectAsState()?.value ?: 0
-    //val totalClientes = viewModel?.totalClientes?.collectAsState()?.value ?: 0
+
     val prestamosActivos by vm.prestamosActivos.collectAsState()
     val totalClientes by vm.totalClientes.collectAsState()
 

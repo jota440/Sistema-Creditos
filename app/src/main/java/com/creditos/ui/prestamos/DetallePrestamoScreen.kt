@@ -211,19 +211,19 @@ fun ResumenTab(
                 InfoRow(
                     icon = Icons.Default.AttachMoney,
                     label = "Monto Principal",
-                    value = "€${"%.2f".format(prestamo.monto_principal)}"
+                    value = "€${"%.2f".format(prestamo.montoPrincipal)}"
                 )
 
                 InfoRow(
                     icon = Icons.Default.AttachMoney,
                     label = "Tasa de Interés",
-                    value = "${"%.1f".format(prestamo.tasa_interes)}% anual"
+                    value = "${"%.1f".format(prestamo.tasaInteres)}% anual"
                 )
 
                 InfoRow(
                     icon = Icons.Default.Schedule,
                     label = "Cuotas",
-                    value = "${prestamo.numero_cuotas} ${prestamo.obtenerFrecuenciaPagoTexto().lowercase()}"
+                    value = "${prestamo.numeroCuotas} ${prestamo.obtenerFrecuenciaPagoTexto().lowercase()}"
                 )
 
                 InfoRow(
@@ -235,13 +235,13 @@ fun ResumenTab(
                 InfoRow(
                     icon = Icons.Default.CalendarMonth,
                     label = "Fecha Inicio",
-                    value = prestamo.fecha_inicio
+                    value = prestamo.fechaInicio
                 )
 
                 InfoRow(
                     icon = Icons.Default.CalendarMonth,
                     label = "Primer Pago",
-                    value = prestamo.fecha_primer_pago
+                    value = prestamo.fechaPrimerPago
                 )
             }
         }
@@ -310,7 +310,7 @@ fun ResumenTab(
                 ) {
                     Text("Total a Pagar:")
                     Text(
-                        text = "€${"%.2f".format(prestamo.monto_total_pagar)}",
+                        text = "€${"%.2f".format(prestamo.montoTotalPagar)}",
                         fontWeight = FontWeight.Bold
                     )
                 }
@@ -323,7 +323,7 @@ fun ResumenTab(
                 ) {
                     Text("Total Intereses:")
                     Text(
-                        text = "€${"%.2f".format(prestamo.total_intereses)}",
+                        text = "€${"%.2f".format(prestamo.totalIntereses)}",
                         color = MaterialTheme.colorScheme.primary
                     )
                 }
@@ -397,7 +397,7 @@ fun ResumenTab(
                     Spacer(modifier = Modifier.width(8.dp))
                     StatCard(
                         title = "Total",
-                        value = prestamo.numero_cuotas.toString(),
+                        value = prestamo.numeroCuotas.toString(),
                         modifier = Modifier.weight(1f)
                     )
                 }

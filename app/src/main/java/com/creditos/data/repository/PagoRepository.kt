@@ -19,11 +19,11 @@ class PagoRepository @Inject constructor(
         fechaPago: String
     ) {
         val pago = Pago(
-            prestamo_id = prestamoId,
-            cuota_id = cuotaId,
+            prestamoId = prestamoId,
+            cuotaId = cuotaId,
             monto = monto,
-            fecha_pago = fechaPago,
-            metodo_pago = metodoPago,
+            fechaPago = fechaPago,
+            metodoPago = metodoPago,
             referencia = referencia,
             concepto = concepto
         )

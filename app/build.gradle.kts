@@ -21,6 +21,10 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
+    
+    buildFeatures {
+        buildConfig = true
+    }
 
     buildTypes {
         release {
@@ -45,8 +49,6 @@ android {
         compose = true
     }
 
-    // ELIMINAR composeOptions - ya no es necesario con Kotlin 2.0+
-    // El plugin de Compose lo maneja automáticamente
 }
 
 dependencies {

@@ -1,3 +1,5 @@
+//AppModule.kt
+
 package com.creditos.di
 
 import android.content.Context
@@ -17,6 +19,8 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
+import com.creditos.data.dao.DireccionDao
+import com.creditos.data.repository.DireccionRepository
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -25,6 +29,7 @@ object AppModule {
     @Provides
     @Singleton
     fun provideDatabase(@ApplicationContext context: Context): CreditosDatabase {
+        android.util.Log.d("HILT", "⚡ provideDatabase() EJECUTADO")
         return CreditosDatabase.getInstance(context)
     }
 
@@ -70,5 +75,15 @@ object AppModule {
     @Provides
     fun provideCuotaRepository(cuotaDao: CuotaDao): CuotaRepository {
         return CuotaRepository(cuotaDao)
+    }
+
+    @Provides
+    fun provideDireccionDao(database: CreditosDatabase): DireccionDao {
+        return database.DireccionDao()
+    }
+
+    @Provides
+    fun provideDireccionRepository(direccionDao: DireccionDao): DireccionRepository {
+        return DireccionRepository(direccionDao)
     }
 }

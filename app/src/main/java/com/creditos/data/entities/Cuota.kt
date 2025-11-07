@@ -4,6 +4,8 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import androidx.room.ColumnInfo
+import java.util.Date
 
 @Entity(
     tableName = "pr_cuotas",
@@ -24,17 +26,39 @@ import androidx.room.PrimaryKey
 data class Cuota(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
+    @ColumnInfo(name = "prestamo_id")
+    val prestamoId: Int,
 
-    val prestamo_id: Int,
-    val numero_cuota: Int,
-    val fecha_vencimiento: String,
-    val monto_capital: Double,
-    val monto_interes: Double,
-    val monto_total: Double,
-    val saldo_restante: Double,
-    val estado: String = "PENDIENTE",
-    val fecha_pago: String? = null,
-    val monto_pagado: Double = 0.0,
-    val dias_mora: Int = 0,
-    val monto_mora: Double = 0.0
+    @ColumnInfo(name = "numero_cuota")
+    val numeroCuota: Int,
+
+    @ColumnInfo(name = "fecha_vencimiento")
+    val fechaVencimiento: String,
+
+    @ColumnInfo(name = "monto_capital")
+    val montoCapital: Double,
+
+    @ColumnInfo(name = "monto_interes")
+    val montoInteres: Double,
+
+    @ColumnInfo(name = "monto_total")
+    val montoTotal: Double,
+
+    @ColumnInfo(name = "saldo_restante")
+    val saldoRestante: Double,
+
+    @ColumnInfo(name = "estado")
+    val estado: String = "PENDIENTE", // PENDIENTE, PAGADA, VENCIDA, PARCIAL
+
+    @ColumnInfo(name = "fecha_pago")
+    val fechaPago: String? = null,
+
+    @ColumnInfo(name = "monto_pagado")
+    val montoPagado: Double = 0.0,
+
+    @ColumnInfo(name = "dias_mora")
+    val diasMora: Int = 0,
+
+    @ColumnInfo(name = "monto_mora")
+    val montoMora: Double = 0.0
 )

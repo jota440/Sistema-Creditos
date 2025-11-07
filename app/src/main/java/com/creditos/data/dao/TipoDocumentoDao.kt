@@ -8,6 +8,6 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface TipoDocumentoDao {
 
-    @Query("SELECT * FROM cl_tipos_documento WHERE activo = 1")
+    @Query("SELECT * FROM cl_tipos_documento")
     suspend fun obtenerActivos(): List<TipoDocumento>
 }

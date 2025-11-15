@@ -95,15 +95,15 @@ abstract class CreditosDatabase : RoomDatabase() {
 
             // ✅ Ahora que tu entidad tiene 'requiere_validacion', los INSERT pueden incluirla.
             val tipos = listOf(
-                "('DNI', 'Documento Nacional de Identidad', 'ES', 0)",
-                "('NIE', 'Número de Identificación de Extranjero', 'ES', 0)",
+                "('DNI', 'DNI', 'ES', 0)",
+                "('NIE', 'NIE', 'ES', 0)",
                 "('PASAPORTE', 'Pasaporte', 'ES', 0)",
-                "('CIF', 'Código de Identificación Fiscal', 'ES', 0)"
+                "('CIF', 'CIF', 'ES', 0)"
             )
 
             tipos.forEach { valores ->
                 db.execSQL(
-                    "INSERT INTO cl_tipos_documento (codigo, descripcion, pais, requiere_validacion, activo) VALUES $valores"
+                    "INSERT INTO cl_tipos_documento (codigo, descripcion, pais, requiere_validacion) VALUES $valores"
                 )
             }
 

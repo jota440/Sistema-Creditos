@@ -1,3 +1,4 @@
+//ClienteRepository.kt
 package com.creditos.data.repository
 
 import com.creditos.data.entities.Cliente
@@ -36,6 +37,29 @@ class ClienteRepository @Inject constructor(
             fechaRegistro = fechaRegistro
         )
         clienteDao.insertar(cliente)
+    }
+
+    // NUEVO: Método que inserta y devuelve el ID como Int
+    suspend fun insertarClienteYDevolverId(
+        nombre: String,
+        apellido: String,
+        tipoDocumentoId: Int,
+        numeroDocumento: String,
+        telefonoPrincipal: String,
+        email: String? = null,
+        fechaRegistro: String
+    ): Int {
+        val cliente = Cliente(
+            nombre = nombre,
+            apellido = apellido,
+            tipoDocumentoId = tipoDocumentoId,
+            numeroDocumento = numeroDocumento,
+            telefonoPrincipal = telefonoPrincipal,
+            email = email,
+            fechaRegistro = fechaRegistro
+        )
+        val idLong = clienteDao.insertarYDevolverId(cliente)
+        return idLong.toInt() // Convertir Long a Int
     }
 
     suspend fun buscarClientes(query: String): List<Cliente> {

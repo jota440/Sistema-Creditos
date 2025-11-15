@@ -3,6 +3,7 @@ package com.creditos.viewmodels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.creditos.data.entities.Cliente
+import com.creditos.data.entities.Prestamo
 import com.creditos.data.repository.ClienteRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -34,7 +35,15 @@ class DetalleClienteViewModel @Inject constructor(
             }
         }
     }
-
+    data class ResumenPrestamo(
+        val prestamo: Prestamo,
+        val totalPagado: Double,
+        val saldoPendiente: Double,
+        val cuotasPagadas: Int,
+        val cuotasPendientes: Int,
+        val cuotasVencidas: Int,
+        val proximaCuota: String?
+    )
     sealed class UIState {
         object Idle : UIState()
         object Loading : UIState()

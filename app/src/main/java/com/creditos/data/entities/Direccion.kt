@@ -24,7 +24,7 @@ import androidx.room.ColumnInfo
 )
 data class Direccion(
     @PrimaryKey(autoGenerate = true)
-    val id: Int = 0,
+    val id: Long = 0,  // CAMBIAR de Int a Long
 
     @ColumnInfo(name = "cliente_id")
     val clienteId: Int,
@@ -44,7 +44,6 @@ data class Direccion(
     val provincia: String,
     val pais: String = "España",
 
-    //@ColumnInfo(name = "es_predeterminada")
     val predeterminada: Boolean = false,
 
     val notas: String? = null,

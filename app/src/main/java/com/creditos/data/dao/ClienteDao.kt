@@ -1,3 +1,4 @@
+//ClienteDao.kt
 package com.creditos.data.dao
 
 import androidx.room.Dao
@@ -17,6 +18,9 @@ interface ClienteDao {
 
     @Insert
     suspend fun insertar(cliente: Cliente)
+
+    @Insert
+    suspend fun insertarYDevolverId(cliente: Cliente): Long
 
     @Query("SELECT * FROM cl_clientes WHERE nombre LIKE :query OR apellido LIKE :query OR numero_documento LIKE :query")
     suspend fun buscarPorNombreODocumento(query: String): List<Cliente>

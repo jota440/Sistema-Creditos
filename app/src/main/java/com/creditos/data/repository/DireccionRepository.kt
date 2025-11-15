@@ -28,11 +28,11 @@ class DireccionRepository @Inject constructor(
         return direccionDao.delete(direccion)
     }
 
-    suspend fun deleteById(id: Int): Int {  // ← Cambiar a Int
+    suspend fun deleteById(id: Long): Int {  // CAMBIAR a Long
         return direccionDao.deleteById(id)
     }
 
-    suspend fun getById(id: Int): Direccion? {  // ← Cambiar a Int
+    suspend fun getById(id: Long): Direccion? {  // CAMBIAR a Long
         return direccionDao.getById(id)
     }
 
@@ -52,11 +52,10 @@ class DireccionRepository @Inject constructor(
         return direccionDao.countByClienteId(clienteId)
     }
 
-    suspend fun marcarComoPredeterminada(direccionId: Int, clienteId: Int) {
+    suspend fun marcarComoPredeterminada(direccionId: Long, clienteId: Int) {  // CAMBIAR a Long
         direccionDao.clearDireccionesPrincipales(clienteId)
         val direccion = direccionDao.getById(direccionId)
         direccion?.let { dir ->
-            // CORREGIDO: Usar constructor completo en lugar de copy()
             val direccionActualizada = Direccion(
                 id = dir.id,
                 clienteId = dir.clienteId,
@@ -69,7 +68,7 @@ class DireccionRepository @Inject constructor(
                 ciudad = dir.ciudad,
                 provincia = dir.provincia,
                 pais = dir.pais,
-                predeterminada = true,  // ← Cambiar a true
+                predeterminada = true,
                 notas = dir.notas,
                 fechaCreacion = dir.fechaCreacion
             )

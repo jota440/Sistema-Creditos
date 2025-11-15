@@ -9,6 +9,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -27,7 +28,7 @@ class DireccionViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.value = UIState.Loading
             try {
-                val direccionesList = direccionRepository.getByClienteId(clienteId)
+                val direccionesList = direccionRepository.getByClienteId(clienteId).first()
                 _direcciones.value = direccionesList
                 _uiState.value = UIState.Success
             } catch (e: Exception) {
@@ -36,7 +37,7 @@ class DireccionViewModel @Inject constructor(
         }
     }
 
-    fun eliminarDireccion(direccionId: Int) {
+    fun eliminarDireccion(direccionId: Long) {  // CAMBIAR a Long
         viewModelScope.launch {
             try {
                 direccionRepository.deleteById(direccionId)
@@ -49,7 +50,7 @@ class DireccionViewModel @Inject constructor(
         }
     }
 
-    fun marcarComoPredeterminada(direccionId: Int, clienteId: Int) {
+    fun marcarComoPredeterminada(direccionId: Long, clienteId: Int) {  // CAMBIAR a Long
         viewModelScope.launch {
             try {
                 direccionRepository.marcarComoPredeterminada(direccionId, clienteId)

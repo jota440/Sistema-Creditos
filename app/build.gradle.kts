@@ -52,6 +52,9 @@ android {
 }
 
 dependencies {
+    // Para parsear CSV
+    implementation("com.opencsv:opencsv:5.9")
+
     // Core
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

@@ -55,6 +55,7 @@ import com.creditos.data.entities.Direccion
 import com.creditos.data.entities.Prestamo
 import com.creditos.viewmodels.DetalleClienteViewModel
 import com.creditos.viewmodels.DireccionViewModel
+import com.creditos.utils.DateUtils
 
 @Composable
 fun DetalleClienteScreen(
@@ -257,7 +258,7 @@ fun ResumenTab(
                     InfoRow(
                         icon = Icons.Default.Person,
                         label = "Fecha Nacimiento",
-                        value = fechaNac
+                        value = DateUtils.formatDate(fechaNac) ?: "N/A"
                     )
                 }
 
@@ -305,7 +306,7 @@ fun ResumenTab(
                 InfoRow(
                     icon = Icons.Default.Person,
                     label = "Fecha de Registro",
-                    value = cliente.fechaRegistro
+                    value = DateUtils.formatDateTime(cliente.fechaRegistro) ?: "N/A"
                 )
 
                 cliente.notas?.let { notas ->

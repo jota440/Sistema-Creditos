@@ -54,6 +54,23 @@ class ClientesViewModel @Inject constructor(
         }
     }
 
+
+    fun buscarPorApellidoPattern(pattern: String) {
+        viewModelScope.launch {
+            try {
+                if (pattern.isBlank()) {
+                    cargarClientes()
+                } else {
+                    val resultados = clienteRepository.buscarClientesPorApellidoPattern(pattern)
+                    _clientes.value = resultados
+                    _uiState.value = UIState.Success
+                }
+            } catch (e: Exception) {
+                _uiState.value = UIState.Error("Error en la búsqueda por apellido")
+            }
+        }
+    }
+
     sealed class UIState {
         object Idle : UIState()
         object Loading : UIState()

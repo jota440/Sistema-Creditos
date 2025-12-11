@@ -1,0 +1,5 @@
+codigo;descripcion;pais;requiere_validacion
+DNI;DNI;ESP;1
+NIE;NIE;ESP;1
+PASAPORTE;Pasaporte;ESP;0
+CIF;CIF;ESP;1

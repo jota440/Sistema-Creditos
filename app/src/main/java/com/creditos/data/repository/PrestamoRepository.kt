@@ -1,3 +1,4 @@
+//PrestamoRepository.kt
 package com.creditos.data.repository
 
 import com.creditos.data.dao.PrestamoDao

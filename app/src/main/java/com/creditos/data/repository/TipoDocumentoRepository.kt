@@ -12,7 +12,6 @@ class TipoDocumentoRepository @Inject constructor(
     suspend fun obtenerTiposDocumentoActivos(): List<TipoDocumento> {
         return try {
             val tipos = tipoDocumentoDao.obtenerActivos()
-            // Log para debug
             android.util.Log.d("TipoDocumentoRepo", "Tipos de documento cargados: ${tipos.size}")
             tipos.forEach { tipo ->
                 android.util.Log.d("TipoDocumentoRepo", "Tipo: ${tipo.codigo} - ${tipo.descripcion}")
@@ -24,7 +23,21 @@ class TipoDocumentoRepository @Inject constructor(
         }
     }
 
-    // Método para debug
+    // NUEVO: obtener un tipo por su código (DNI, NIE, CIF, etc.)
+    suspend fun obtenerPorCodigo(codigo: String): TipoDocumento? {
+        return try {
+            tipoDocumentoDao.obtenerPorCodigo(codigo)
+        } catch (e: Exception) {
+            android.util.Log.e(
+                "TipoDocumentoRepo",
+                "Error obteniendo tipo documento por código $codigo",
+                e
+            )
+            null
+        }
+    }
+
+    // Método para debug (lo mantengo tal cual)
     suspend fun obtenerTodosTiposDocumento(): List<TipoDocumento> {
         return try {
             val tipos = tipoDocumentoDao.obtenerActivos()

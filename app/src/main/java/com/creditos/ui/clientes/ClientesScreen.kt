@@ -1,23 +1,24 @@
+//ClienteScreen.kt
 package com.creditos.ui.clientes
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+//import androidx.compose.foundation.layout.Spacer
+//import androidx.compose.foundation.layout.height
 //import androidx.compose.material.icons.filled.ArrowBack
+//import androidx.compose.material.icons.filled.Person
+//import androidx.compose.material3.Card
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -162,68 +163,89 @@ fun ClienteCard(
         onClick = onClick,
         modifier = Modifier.fillMaxWidth()
     ) {
-        Row(
-            modifier = Modifier.padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            // Avatar
-            Card(
-                modifier = Modifier
-                    .height(48.dp)
-                    .padding(end = 16.dp)
+            // Fila principal: 3 bloques en horizontal
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(8.dp),
-                    contentAlignment = Alignment.Center
+                // 1) Nombre y apellido
+                Column(
+                    modifier = Modifier.weight(1f)
                 ) {
                     Text(
-                        text = "${cliente.nombre.first()}${cliente.apellido.first()}",
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.primary
+                        text = "${cliente.nombre} ${cliente.apellido}",
+                        style = MaterialTheme.typography.bodyLarge,
+                        fontWeight = FontWeight.Bold
                     )
                 }
-            }
 
-            // Información
-            Column(
-                modifier = Modifier.weight(1f)
-            ) {
-                Text(
-                    text = "${cliente.nombre} ${cliente.apellido}",
-                    style = MaterialTheme.typography.bodyLarge,
-                    fontWeight = FontWeight.Bold
-                )
-                Text(
-                    text = "DNI: ${cliente.numeroDocumento}",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-                Text(
-                    text = cliente.telefonoPrincipal,
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-                cliente.email?.let { email ->
+                // 2) Teléfono
+                Column(
+                    modifier = Modifier.weight(1f)
+                ) {
                     Text(
-                        text = email,
-                        style = MaterialTheme.typography.bodySmall,
+                        text = "Teléfono",
+                        style = MaterialTheme.typography.labelSmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
+                    Text(
+                        text = cliente.telefonoPrincipal,
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                }
+
+                // 3) Notas (ajusta el nombre del campo si es distinto)
+                Column(
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Text(
+                        text = "Notas",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    val notas = cliente.notas // TODO: cambia 'notas' si tu campo se llama distinto
+                    Text(
+                        text = notas?.take(40) ?: "-",
+                        style = MaterialTheme.typography.bodyMedium,
+                        maxLines = 2
+                    )
                 }
             }
 
-            // Estado
+            // Estado (debajo de la fila, opcional)
             Text(
                 text = if (cliente.activo) "Activo" else "Inactivo",
                 color = if (cliente.activo) MaterialTheme.colorScheme.primary
                 else MaterialTheme.colorScheme.error,
                 fontWeight = FontWeight.Medium
             )
+
+            // Botón con iniciales (centrado, bajo todo)
+            val iniciales = buildString {
+                if (cliente.nombre.isNotBlank()) append(cliente.nombre.first())
+                if (cliente.apellido.isNotBlank()) append(cliente.apellido.first())
+            }
+
+            androidx.compose.material3.Button(
+                onClick = onClick,
+                modifier = Modifier.align(Alignment.CenterHorizontally)
+            ) {
+                Text(
+                    text = iniciales,
+                    fontWeight = FontWeight.Bold
+                )
+            }
         }
     }
 }
+
 
 @Preview(showBackground = true)
 @Composable
